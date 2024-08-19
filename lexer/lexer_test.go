@@ -41,8 +41,7 @@ func TestNextTokenBasic(t *testing.T) {
 			t.Fatalf(
 				"test[%d]: token literal wrong. expected='%s', got='%s'",
 				i,
-				tt.expectedLiteral, tok.Literal,
-			)
+				tt.expectedLiteral, tok.Literal)
 		}
 	}
 }
@@ -99,6 +98,54 @@ func TestNextTokenComplex(t *testing.T) {
 		{token.RPAREN, ")"},
 		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
+	}
+
+	l := lexer.New(input)
+
+	for i, tt := range tests {
+		tok := l.NextToken()
+
+		switch {
+		case tok.Type != tt.expectedType:
+			t.Fatalf(
+				"test[%d]: token type wrong. expected='%s', got='%s'",
+				i,
+				tt.expectedType, tok.Type,
+			)
+
+		case tok.Literal != tt.expectedLiteral:
+			t.Fatalf(
+				"test[%d]: token literal wrong. expected='%s', got='%s'",
+				i,
+				tt.expectedLiteral, tok.Literal,
+			)
+		}
+	}
+}
+
+func TestFailedToken(t *testing.T) {
+	input := `let some_one = 5;
+  let test1 = -20;
+  let 1five = 5;
+  `
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.LET, "let"},
+		{token.IDENTIFIER, "some_one"},
+		{token.ASSIGN, "="},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+		{token.LET, "let"},
+		{token.IDENTIFIER, "test1"},
+		{token.ASSIGN, "="},
+		{token.MINUS, "-"},
+		{token.INT, "20"},
+		{token.SEMICOLON, ";"},
+		{token.LET, "let"},
+		{token.ILLEGAL, "1f"},
 	}
 
 	l := lexer.New(input)
