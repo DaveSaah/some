@@ -3,3 +3,6 @@ some
 
 # local environment variables
 *.envrc
+
+# folder that stores compiled binaries for release
+dist/
