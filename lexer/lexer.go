@@ -70,6 +70,13 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
+func isLetter(ch byte) bool {
+	return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_'
+}
+
+func isDigit(ch byte) bool {
+	return (ch >= '0' && ch <= '9')
+}
 
 // eatWhitespace removes all whitespaces in lexer's input
 func (l *Lexer) eatWhitespace() {
