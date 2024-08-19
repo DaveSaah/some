@@ -1,2 +1,5 @@
+# compiled binary
 some
+
+# local environment variables
 *.envrc
