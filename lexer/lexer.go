@@ -51,6 +51,8 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.PLUS, l.ch)
 	case ',':
 		tok = newToken(token.COMMA, l.ch)
+	case '-':
+		tok = newToken(token.MINUS, l.ch)
 	case ';':
 		tok = newToken(token.SEMICOLON, l.ch)
 	case '(':
@@ -64,6 +66,17 @@ func (l *Lexer) NextToken() token.Token {
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+	default:
+		if isLetter(l.ch) {
+			tok.Literal = l.readIdentifier()
+			tok.Type = token.LoopupIdentifier(tok.Literal)
+			return tok
+		} else if isDigit(l.ch) {
+			tok = l.readNumberToken()
+			return tok
+		} else {
+			tok = newToken(token.ILLEGAL, l.ch)
+		}
 	}
 
 	l.readChar()
