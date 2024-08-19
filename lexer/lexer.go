@@ -2,6 +2,8 @@
 // source code
 package lexer
 
+import "github.com/DaveSaah/some/token"
+
 type Lexer struct {
 	input        string
 	position     int  // current char position in input
@@ -16,6 +18,14 @@ func New(input string) *Lexer {
 	return l
 }
 
+// newToken creates a new token from a token type and a character
+func newToken(tokenType token.TokenType, ch byte) token.Token {
+	return token.Token{
+		Type:    tokenType,
+		Literal: string(ch),
+	}
+}
+
 // readChar reads a character from the lexer input
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
@@ -28,3 +38,32 @@ func (l *Lexer) readChar() {
 	l.readPosition += 1
 }
 
+// NextToken returns the next token from a lexer input
+func (l *Lexer) NextToken() token.Token {
+	var tok token.Token
+
+	switch l.ch {
+	case '=':
+		tok = newToken(token.ASSIGN, l.ch)
+	case '+':
+		tok = newToken(token.PLUS, l.ch)
+	case ',':
+		tok = newToken(token.COMMA, l.ch)
+	case ';':
+		tok = newToken(token.SEMICOLON, l.ch)
+	case '(':
+		tok = newToken(token.LPAREN, l.ch)
+	case ')':
+		tok = newToken(token.RPAREN, l.ch)
+	case '{':
+		tok = newToken(token.LBRACE, l.ch)
+	case '}':
+		tok = newToken(token.RBRACE, l.ch)
+	case 0:
+		tok.Literal = ""
+		tok.Type = token.EOF
+	}
+
+	l.readChar()
+	return tok
+}
