@@ -78,6 +78,24 @@ func isDigit(ch byte) bool {
 	return (ch >= '0' && ch <= '9')
 }
 
+// readIdentifier reads an identifier from a lexer's input string
+func (l *Lexer) readIdentifier() string {
+	position := l.position // track current position
+
+	// check if the first character is a letter
+	if isLetter(l.ch) {
+		l.readChar()
+	}
+
+	// check if the identifier satisfies its rule:
+	// Can have a letter or digit
+	for isLetter(l.ch) || isDigit(l.ch) {
+		l.readChar()
+	}
+
+	return l.input[position:l.position]
+}
+
 // eatWhitespace removes all whitespaces in lexer's input
 func (l *Lexer) eatWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
@@ -85,3 +103,22 @@ func (l *Lexer) eatWhitespace() {
 	}
 }
 
+func (l *Lexer) readNumberToken() token.Token {
+	position := l.position
+
+	for isDigit(l.ch) {
+		l.readChar()
+
+		if isLetter(l.input[l.readPosition]) {
+			return token.Token{
+				Type:    token.ILLEGAL,
+				Literal: l.input[position:l.readPosition],
+			}
+		}
+	}
+
+	return token.Token{
+		Type:    token.INT,
+		Literal: l.input[position:l.position],
+	}
+}
