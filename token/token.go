@@ -21,6 +21,7 @@ const (
 	// Operators
 	ASSIGN = "="
 	PLUS   = "+"
+	MINUS  = "-"
 
 	// Delimiters
 	COMMA     = ","
@@ -34,3 +35,19 @@ const (
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
 )
+
+// define keyword symbol table
+var keywords = map[string]TokenType{
+	"fn":  FUNCTION,
+	"let": LET,
+}
+
+// LoopupIdentifier checks whether the identiier is a
+// variable or a keyword
+func LoopupIdentifier(ident string) TokenType {
+	if tokenType, ok := keywords[ident]; ok {
+		return tokenType
+	}
+
+	return IDENTIFIER
+}
