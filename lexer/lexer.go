@@ -6,9 +6,9 @@ import "github.com/DaveSaah/some/token"
 
 type Lexer struct {
 	input        string
-	position     int  // current char position in input
-	readPosition int  // next char position after current char in input
-	ch           byte // current char under examination
+	position     int  // current character position in input
+	readPosition int  // next character position after current char in input
+	ch           byte // current character under examination
 }
 
 // New creates a new lexer from an input
@@ -38,6 +38,16 @@ func (l *Lexer) readChar() {
 	l.readPosition += 1
 }
 
+// peekChar checks the next character from the lexer input
+// without incrementing the readPosition
+func (l *Lexer) peekChar() byte {
+	if l.readPosition >= len(l.input) {
+		return 0 // set to ASCII NUL
+	} else {
+		return l.input[l.readPosition]
+	}
+}
+
 // NextToken returns the next token from a lexer input
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
@@ -46,7 +56,13 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.ch {
 	case '=':
-		tok = newToken(token.ASSIGN, l.ch)
+		if l.peekChar() == '=' {
+			tok.Literal = "=="
+			tok.Type = token.EQUALS
+			l.readChar()
+		} else {
+			tok = newToken(token.ASSIGN, l.ch)
+		}
 	case '+':
 		tok = newToken(token.PLUS, l.ch)
 	case ',':
@@ -63,6 +79,22 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.LBRACE, l.ch)
 	case '}':
 		tok = newToken(token.RBRACE, l.ch)
+	case '!':
+		if l.peekChar() == '=' {
+			tok.Literal = "!="
+			tok.Type = token.NOT_EQUALS
+			l.readChar()
+		} else {
+			tok = newToken(token.BANG, l.ch)
+		}
+	case '*':
+		tok = newToken(token.ASTERISK, l.ch)
+	case '/':
+		tok = newToken(token.SLASH, l.ch)
+	case '<':
+		tok = newToken(token.LESS_THAN, l.ch)
+	case '>':
+		tok = newToken(token.GREATER_THAN, l.ch)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -121,13 +153,6 @@ func (l *Lexer) readNumberToken() token.Token {
 
 	for isDigit(l.ch) {
 		l.readChar()
-
-		if isLetter(l.input[l.readPosition]) {
-			return token.Token{
-				Type:    token.ILLEGAL,
-				Literal: l.input[position:l.readPosition],
-			}
-		}
 	}
 
 	return token.Token{
