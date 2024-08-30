@@ -11,7 +11,7 @@ type Token struct {
 
 const (
 	ILLEGAL = "ILLEGAL" // signifies an unknown token
-	EOF     = "EOF"
+	EOF     = "EOF"     // End of File
 
 	IDENTIFIER = "IDENTIFIER"
 
@@ -19,9 +19,16 @@ const (
 	INT = "INT"
 
 	// Operators
-	ASSIGN = "="
-	PLUS   = "+"
-	MINUS  = "-"
+	ASSIGN       = "="
+	PLUS         = "+"
+	MINUS        = "-"
+	BANG         = "!"
+	ASTERISK     = "*"
+	SLASH        = "/"
+	LESS_THAN    = "<"
+	GREATER_THAN = ">"
+	EQUALS       = "=="
+	NOT_EQUALS   = "!="
 
 	// Delimiters
 	COMMA     = ","
@@ -34,12 +41,22 @@ const (
 	// Keywords
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
+	IF       = "IF"
+	ELSE     = "ELSE"
+	TRUE     = "TRUE"
+	FALSE    = "FALSE"
+	RETURN   = "RETURN"
 )
 
 // define keyword symbol table
 var keywords = map[string]TokenType{
-	"fn":  FUNCTION,
-	"let": LET,
+	"fn":     FUNCTION,
+	"let":    LET,
+	"if":     IF,
+	"else":   ELSE,
+	"true":   TRUE,
+	"false":  FALSE,
+	"return": RETURN,
 }
 
 // LoopupIdentifier checks whether the identiier is a
