@@ -153,13 +153,6 @@ func (l *Lexer) readNumberToken() token.Token {
 
 	for isDigit(l.ch) {
 		l.readChar()
-
-		if isLetter(l.input[l.readPosition]) {
-			return token.Token{
-				Type:    token.ILLEGAL,
-				Literal: l.input[position:l.readPosition],
-			}
-		}
 	}
 
 	return token.Token{
