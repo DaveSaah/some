@@ -12,7 +12,7 @@ import (
 
 const PROMPT = ">> "
 
-func Start(in io.Reader, out io.Writer) {
+func Start(in io.Reader) {
 	scanner := bufio.NewScanner(in)
 
 	for {
